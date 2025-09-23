@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "624452197062",
+    "project_id": "shoepify-6828b",
+    "storage_bucket": "shoepify-6828b.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:624452197062:android:9246282bc26a5175cc15c7",
+        "android_client_info": {
+          "package_name": "com.example.ecommerce"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "624452197062-4rqr713hohugmnji7sqi6j16cb4fpd6n.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBML2i6t-SDEiv3Sbaz5Dd8Zgl-vJV-SFo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "624452197062-4rqr713hohugmnji7sqi6j16cb4fpd6n.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "624452197062-1n51q56lqt522jb34eejj9grhd52a0ms.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.shoepify1"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
