@@ -18,6 +18,7 @@ class _SignInScreenState extends State<SignInScreen> {
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   bool _obscurePassword = true;
+  // final  GoogleSignIn _googleSignIn = GoogleSignIn();
 
   @override
   void dispose() {
@@ -55,23 +56,28 @@ class _SignInScreenState extends State<SignInScreen> {
     }
   }
 
-  Future<void> login() async {
+  Future<UserCredential?> _signInWithGoogle() async {
     try {
+      // Start interactive sign-in process
       final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
-      if (googleUser == null) {
-        return; // User canceled the sign-in
-      }
+
+      // If the user canceled the sign-in
+      if (googleUser == null) return null;
+
+      // Get authentication details
       final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+
+      // Create Firebase credential
       final credential = GoogleAuthProvider.credential(
         accessToken: googleAuth.accessToken,
         idToken: googleAuth.idToken,
       );
-      await FirebaseAuth.instance.signInWithCredential(credential);
-      Get.offAll(Home()); // navigate & clear previous routes
+
+      // Sign in with Firebase
+      return await FirebaseAuth.instance.signInWithCredential(credential);
     } catch (e) {
-      setState(() {
-        errorMessage = e.toString();
-      });
+      print("Google sign-in error: $e");
+      return null;
     }
   }
 
@@ -249,7 +255,9 @@ class _SignInScreenState extends State<SignInScreen> {
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: OutlinedButton.icon(
-                          onPressed: (()=>login()),
+                          onPressed: ()=> {
+                            _signInWithGoogle()
+                          },
                           icon: Image.network(
                             "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/768px-Google_%22G%22_logo.svg.png",
                             height: 20,
@@ -351,3 +359,4 @@ class _SignInScreenState extends State<SignInScreen> {
     );
   }
 }
+
