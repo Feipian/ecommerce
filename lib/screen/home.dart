@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in_platform_interface/google_sign_in_platform_interface.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -9,6 +10,9 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+
+  Future<void>? _initialization;
+
 
   final user = FirebaseAuth.instance.currentUser;
 
@@ -27,6 +31,7 @@ class _HomeState extends State<Home> {
         onPressed: (()=>signOut()),
         child: Icon(Icons.login_rounded),
       ),
+
     );
   }
 }
