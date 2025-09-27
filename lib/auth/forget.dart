@@ -12,26 +12,64 @@ class ForgetScreen extends StatefulWidget {
 class _ForgetScreenState extends State<ForgetScreen> {
 
   final TextEditingController emailController = TextEditingController();
-  bool _obscurePassword = true;
 
-  // reset()async{
-  //   await FirebaseAuth.instance.sendPasswordResetEmail(
-  //       email: emailController.text);
-  // }
+
+
 
   Future<void> reset() async {
     try {
       await FirebaseAuth.instance.sendPasswordResetEmail(
         email: emailController.text.trim(),
       );
-      // setState(() {
-      //   errorMessage = null; // clear errors
-      // });
-      // Get.to(Home());
-    } on FirebaseAuthException catch (e) {
 
-    } catch (e) {}
+      // ✅ Show success popup
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text("Email Sent"),
+          content: const Text(
+            "We’ve sent a password reset link to your email. Please check your inbox.",
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(), // close popup
+              child: const Text("OK"),
+            ),
+          ],
+        ),
+      );
+    } on FirebaseAuthException catch (e) {
+      // ✅ Show error popup
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text("Error"),
+          content: Text(e.message ?? "Something went wrong."),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text("OK"),
+            ),
+          ],
+        ),
+      );
+    } catch (e) {
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text("Error"),
+          content: Text(e.toString()),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text("OK"),
+            ),
+          ],
+        ),
+      );
+    }
   }
+
 
 
   @override

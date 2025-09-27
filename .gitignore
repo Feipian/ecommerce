@@ -43,3 +43,15 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+
+# Firebase config files (mobile)
+/android/app/google-services.json
+/ios/Runner/GoogleService-Info.plist
+
+# If you keep firebase_options.dart generated file out of repo
+/lib/firebase_options.dart
+
+# Service account JSON
+/service-account.json
+*.service-account.json

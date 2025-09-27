@@ -1,5 +1,6 @@
-import 'package:ecommerce/auth/signInScreen.dart';
-import 'package:ecommerce/auth/wrapper.dart';
+
+import 'package:ecommerce/auth/userInfoScreen.dart';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter/cupertino.dart';
@@ -19,9 +20,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
   bool _obscurePassword = true;
 
   signUp()async{
-    await FirebaseAuth.instance.createUserWithEmailAndPassword(
+    UserCredential userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
         email: emailController.text, password: passwordController.text);
-    Get.to(Wrapper());
+    Get.to(() => UserInfoScreen(userId: userCredential.user!.uid));
+
   }
 
   @override
