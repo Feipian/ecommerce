@@ -1,11 +1,6 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:ecommerce/screen/profile.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-
-
-import '../models/movie.dart';
-import '../movie/add_movie_page.dart';
-
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -15,126 +10,91 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-
-
-
-
   final user = FirebaseAuth.instance.currentUser;
 
-  // Fetch movies from Firestore
-  Future<List<Movie>> fetchMovies() async {
-    final snapshot = await FirebaseFirestore.instance.collection('movies').get();
-    return snapshot.docs
-        .map((doc) => Movie.fromFirestore(doc.data(), doc.id))
-        .toList();
-  }
+  int _selectedIndex = 0;
 
-  signOut()async{
+  signOut() async {
     await FirebaseAuth.instance.signOut();
   }
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+
+  // Example pages for navigation
+  static final List<Widget> _pages = <Widget>[
+    Center(child: Text("Home Page")),
+    Center(child: Text("Categories Page")),
+    Center(child: Text("Cart Page")),
+    Center(child: Text("Notifications Page")),
+    const ProfilePage()
+  ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Home page"),
-      ),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Text(
-              "Welcome ${user?.email}",
-              style: TextStyle(fontSize: 18),
-            ),
-          ),
-
-          Expanded(
-            child: FutureBuilder<List<Movie>>(
-              future: fetchMovies(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(child: CircularProgressIndicator());
-                }
-                if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return Center(child: Text('No movies available.'));
-                }
-
-                final movies = snapshot.data!;
-                return GridView.builder(
-                  padding: EdgeInsets.all(8),
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    mainAxisSpacing: 8,
-                    crossAxisSpacing: 8,
-                    childAspectRatio: 0.65,
+      body: SafeArea(
+        child: Column(
+          children: [
+            // Search Bar
+            Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: TextField(
+                decoration: InputDecoration(
+                  hintText: "Search",
+                  prefixIcon: const Icon(Icons.search),
+                  filled: true,
+                  fillColor: Colors.grey[200],
+                  contentPadding: const EdgeInsets.symmetric(
+                      vertical: 0, horizontal: 16),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide.none,
                   ),
-                  itemCount: movies.length,
-                  itemBuilder: (context, index) {
-                    final movie = movies[index];
-                    return GestureDetector(
-                      onTap: () {
-                        // Navigate to detail page if needed
-                      },
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Expanded(
-                            child: Image.network(
-                              movie.posterUrl,
-                              fit: BoxFit.cover,
-                              width: double.infinity,
-                            ),
-                          ),
-                          SizedBox(height: 4),
-                          Text(
-                            movie.title,
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                          Text(
-                            movie.releaseDate.toLocal().toString().split(' ')[0],
-                            style: TextStyle(color: Colors.grey),
-                          ),
-                        ],
-                      ),
-                    );
-                  },
-                );
-              },
+                ),
+              ),
             ),
+
+            // Page Content changes based on selectedIndex
+            Expanded(
+              child: _pages[_selectedIndex],
+            ),
+          ],
+        ),
+      ),
+
+      // Bottom Navigation Bar
+      bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
+        currentIndex: _selectedIndex,
+        onTap: _onItemTapped,
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home_outlined),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.category_outlined), // changed to category
+            label: 'Categories',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.shopping_cart_outlined),
+            label: 'Cart',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.notifications_none),
+            label: 'Notifications',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person_outline),
+            label: 'Profile',
+
           ),
         ],
       ),
-      floatingActionButton:
-        Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            FloatingActionButton(
-              heroTag: "logoutBtn",
-              onPressed: signOut,
-              child: Icon(Icons.logout),
-            ),
-            SizedBox(height: 16),
-            FloatingActionButton(
-              heroTag: 'addMovieBtn',
-              onPressed: (){
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => AddMoviePage()),
-                );
-              },
-              child: Icon(Icons.add),
-            )
-            ]
-        )
-      // FloatingActionButton(
-      //   onPressed: signOut,
-      //   child: Icon(Icons.logout),
-      // ),
-
     );
   }
 }
-
-
-
